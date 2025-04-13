@@ -1,6 +1,6 @@
 # crypto_price_list
 
-2025 Flutter Advanced class (Medium practicla project)
+2025 Flutter Advanced class (Medium practical project)
 
 <b>Api docs</b>
 
