@@ -10,6 +10,6 @@ Widget priceIndicator(num? value) {
         )
       : Icon(
           Icons.arrow_drop_down_sharp,
-          color: indicatorColor(value!),
+          color: indicatorColor(value ?? 0.0),
         );
 }

@@ -38,42 +38,46 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
   Widget build(BuildContext context) {
     String chartUrl =
         '${UrlConst.charUrl}${widget.symbol.toUpperCase()}USD${UrlConst.chartQuery}';
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 400,
-            child: IframeViewer(link: chartUrl),
-          ),
-          Consumer(builder: (context, ref, child) {
-            PriceDetailStateModel model = ref.watch(_detailProvider);
-            DateTime? date = model.time;
-            return Column(
-              children: [
-                DetailPriceItem(
-                  title: 'Current Price',
-                  value: model.currentPrice?.toString() ?? '',
-                ),
-                DetailPriceItem(
-                  title: 'Bid Price',
-                  value: model.bidPrice?.toString() ?? '',
-                ),
-                DetailPriceItem(
-                  title: 'Ask Price',
-                  value: model.sellPrice?.toString() ?? '',
-                ),
-                DetailPriceItem(
-                  title: 'Updated at',
-                  value:
-                      '${date?.day}-${date?.month}-${date?.year} ${date?.hour}:${date?.minute}',
-                ),
-              ],
-            );
-          }),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: height * 0.4,
+              child: IframeViewer(link: chartUrl),
+            ),
+            Consumer(builder: (context, ref, child) {
+              PriceDetailStateModel model = ref.watch(_detailProvider);
+              DateTime? date = model.time;
+              return Column(
+                children: [
+                  DetailPriceItem(
+                    title: 'Current Price',
+                    value: model.currentPrice?.toString() ?? '-',
+                  ),
+                  DetailPriceItem(
+                    title: 'Bid Price',
+                    value: model.bidPrice?.toString() ?? '-',
+                  ),
+                  DetailPriceItem(
+                    title: 'Ask Price',
+                    value: model.sellPrice?.toString() ?? '-',
+                  ),
+                  DetailPriceItem(
+                    title: 'Updated at',
+                    value: date == null
+                        ? '-'
+                        : '${date.day}-${date.month}-${date.year} ${date.hour}:${date.minute}:${date.second}',
+                  ),
+                ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

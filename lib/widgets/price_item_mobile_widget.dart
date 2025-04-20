@@ -1,13 +1,14 @@
 import 'package:crypto_price_list/pages/price_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../const/indicator_color.dart';
 import '../const/number_utils.dart';
 import '../data/models/price_model.dart';
 import 'price_indicator.dart';
 
-class PriceItem extends StatelessWidget {
-  const PriceItem({
+class PriceItemMobile extends StatelessWidget {
+  const PriceItemMobile({
     super.key,
     required this.priceModel,
   });
@@ -21,14 +22,12 @@ class PriceItem extends StatelessWidget {
       onTap: () {
         String? symbol = priceModel.symbol;
         if (symbol != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => PriceDetailPage(
-                symbol: symbol,
-                name: priceModel.name ?? '',
-              ),
-            ),
+          context.pushNamed(
+            'detail',
+            queryParameters: {
+              'symbol': symbol,
+              'name': priceModel.name ?? '',
+            },
           );
         }
       },
@@ -122,7 +121,8 @@ class PriceItem extends StatelessWidget {
                             priceModel.priceChangePercentage1hInCurrency),
                         Text(
                           priceModel.priceChangePercentage1hInCurrency
-                                  ?.toStringAsFixed(1) ??
+                                  ?.abs()
+                                  .toStringAsFixed(1) ??
                               '',
                           style: TextStyle(
                             color: indicatorColor(
@@ -139,7 +139,8 @@ class PriceItem extends StatelessWidget {
                             priceModel.priceChangePercentage24hInCurrency),
                         Text(
                           priceModel.priceChangePercentage24hInCurrency
-                                  ?.toStringAsFixed(1) ??
+                                  ?.abs()
+                                  .toStringAsFixed(1) ??
                               '',
                           style: TextStyle(
                             color: indicatorColor(
@@ -159,7 +160,8 @@ class PriceItem extends StatelessWidget {
                               priceModel.priceChangePercentage7dInCurrency),
                           Text(
                             priceModel.priceChangePercentage7dInCurrency
-                                    ?.toStringAsFixed(1) ??
+                                    ?.abs()
+                                    .toStringAsFixed(1) ??
                                 '',
                             style: TextStyle(
                               color: indicatorColor(
