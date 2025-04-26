@@ -4,28 +4,46 @@ import 'package:crypto_price_list/pages/news_page.dart';
 import 'package:crypto_price_list/pages/price_list_page.dart';
 import 'package:crypto_price_list/pages/setting_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+import '../notifiers/price_list/price_list_state_notifier.dart';
+
+class HomePage extends ConsumerStatefulWidget {
+  const HomePage({
+    super.key,
+    required this.shell,
+  });
+  final StatefulNavigationShell shell;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  final priceListProvider = PriceListProvider(
+    () => PriceListStateNotifier(),
+  );
+  @override
+  void initState() {
+    super.initState();
+    if (!GetIt.I.isRegistered<PriceListProvider>()) {
+      GetIt.I.registerSingleton<PriceListProvider>(priceListProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    GoRouterState state = GoRouter.of(context).state;
-    String path = state.uri.path;
+    StatefulNavigationShell shell = widget.shell;
     return Scaffold(
       body: Column(
         children: [
           if (width >= 600)
             DefaultTabController(
               length: 4,
-              initialIndex: mainRoutes.indexOf(path),
+              initialIndex: shell.currentIndex,
               child: Column(
                 children: [
                   TabBar(
@@ -48,23 +66,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                     onTap: (index) {
-                      context.go(mainRoutes[index]);
+                      shell.goBranch(index);
+                      if (index == 1) {
+                        ref
+                            .read(priceListProvider.notifier)
+                            .getFavouritesList();
+                      }
                     },
                   ),
                 ],
               ),
             ),
-          if (path == '/') Expanded(child: PriceListPage()),
-          if (path == '/favourites') FavoritePage(),
-          if (path == '/news') NewsPage(),
-          if (path == '/settings') SettingPage(),
+          Expanded(child: shell),
         ],
       ),
       bottomNavigationBar: width < 600
           ? NavigationBar(
-              selectedIndex: mainRoutes.indexOf(path),
+              selectedIndex: shell.currentIndex,
               onDestinationSelected: (index) {
-                context.go(mainRoutes[index]);
+                shell.goBranch(index);
+                if (index == 1) {
+                  ref.read(priceListProvider.notifier).getFavouritesList();
+                }
               },
               destinations: [
                 NavigationDestination(

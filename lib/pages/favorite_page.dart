@@ -1,17 +1,38 @@
+import 'package:crypto_price_list/notifiers/price_list/price_list_state_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 
-class FavoritePage extends StatefulWidget {
+import '../widgets/price_list_widget.dart';
+
+class FavoritePage extends ConsumerStatefulWidget {
   const FavoritePage({super.key});
 
   @override
-  State<FavoritePage> createState() => _FavoritePageState();
+  ConsumerState<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class _FavoritePageState extends ConsumerState<FavoritePage> {
+  final _provider = GetIt.I.get<PriceListProvider>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(_provider.notifier).getFavouritesList();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant FavoritePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Favourite"),
+    return PriceListWidget(
+      priceListProvider: _provider,
+      isFav: true,
     );
   }
 }

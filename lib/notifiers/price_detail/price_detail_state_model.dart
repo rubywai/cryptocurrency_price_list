@@ -3,6 +3,7 @@ class PriceDetailStateModel {
   num? bidPrice;
   num? sellPrice;
   DateTime? time;
+  bool isFavourite;
 
   @override
   String toString() {
@@ -14,6 +15,7 @@ class PriceDetailStateModel {
     this.bidPrice,
     this.sellPrice,
     this.time,
+    this.isFavourite = false,
   });
 
   PriceDetailStateModel copyWith({
@@ -21,12 +23,14 @@ class PriceDetailStateModel {
     num? bidPrice,
     num? sellPrice,
     DateTime? time,
+    bool? isFavourite,
   }) {
     return PriceDetailStateModel(
       currentPrice: currentPrice ?? this.currentPrice,
       bidPrice: bidPrice ?? this.bidPrice,
       sellPrice: sellPrice ?? this.sellPrice,
       time: time ?? this.time,
+      isFavourite: isFavourite ?? this.isFavourite,
     );
   }
 }

@@ -1,3 +1,6 @@
+import 'package:crypto_price_list/pages/favorite_page.dart';
+import 'package:crypto_price_list/pages/news_page.dart';
+import 'package:crypto_price_list/pages/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,19 +12,56 @@ const List<String> mainRoutes = ['/', '/favourites', '/news', '/settings'];
 
 final GoRouter routes = GoRouter(
   routes: [
-    GoRoute(
-      name: 'home',
-      path: '/',
-      builder: (context, state) {
-        return HomePage();
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return HomePage(shell: navigationShell);
       },
-    ),
-    GoRoute(
-      name: 'list',
-      path: '/list',
-      builder: (context, state) {
-        return PriceListPage();
-      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'list',
+              path: '/',
+              builder: (context, state) {
+                return PriceListPage();
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'favourites',
+              path: '/favourites',
+              builder: (context, state) {
+                return FavoritePage();
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'news',
+              path: '/news',
+              builder: (context, state) {
+                return NewsPage();
+              },
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'settings',
+              path: '/settings',
+              builder: (context, state) {
+                return SettingPage();
+              },
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
         name: 'detail',
@@ -34,26 +74,5 @@ final GoRouter routes = GoRouter(
           }
           return SizedBox.shrink();
         }),
-    GoRoute(
-      name: 'favourites',
-      path: '/favourites',
-      builder: (context, state) {
-        return HomePage();
-      },
-    ),
-    GoRoute(
-      name: 'news',
-      path: '/news',
-      builder: (context, state) {
-        return HomePage();
-      },
-    ),
-    GoRoute(
-      name: 'settings',
-      path: '/settings',
-      builder: (context, state) {
-        return HomePage();
-      },
-    ),
   ],
 );

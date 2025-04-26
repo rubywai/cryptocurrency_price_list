@@ -28,9 +28,10 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(_detailProvider.notifier)
-          .getUpdatedPrice(widget.symbol.toUpperCase());
+      ref.read(_detailProvider.notifier).getUpdatedPrice(
+            widget.symbol.toUpperCase(),
+            widget.name,
+          );
     });
   }
 
@@ -39,9 +40,29 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
     String chartUrl =
         '${UrlConst.charUrl}${widget.symbol.toUpperCase()}USD${UrlConst.chartQuery}';
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name),
+        actions: [
+          Consumer(
+            builder: (context, ref, child) {
+              bool isFav = ref.watch(_detailProvider).isFavourite;
+              return IconButton(
+                onPressed: () {
+                  final detailNotifier = ref.read(_detailProvider.notifier);
+                  if (isFav) {
+                    detailNotifier.removeFavourite(widget.name);
+                  } else {
+                    detailNotifier.addFavourite(widget.name);
+                  }
+                },
+                icon:
+                    isFav ? Icon(Icons.star) : Icon(Icons.star_border_outlined),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
