@@ -7,6 +7,7 @@ typedef NewsProvider = NotifierProvider<NewsStateNotifier, NewsStateModel>;
 
 class NewsStateNotifier extends Notifier<NewsStateModel> {
   final NewsApiService _apiService = NewsApiService();
+  int _page = 1;
   @override
   NewsStateModel build() {
     return NewsStateModel();
@@ -30,6 +31,22 @@ class NewsStateNotifier extends Notifier<NewsStateModel> {
         isLoading: false,
         isError: false,
       );
+    }
+  }
+
+  void loadMore() async {
+    try {
+      _page = _page + 1;
+      NewsModel newsModel1 = await _apiService.getNews(page: _page);
+      state = state.copWith(
+          newsModel: state.newsModel?.copyWith(
+        articles: [
+          ...state.newsModel?.articles ?? [],
+          ...newsModel1.articles ?? [],
+        ],
+      ));
+    } catch (e) {
+      //
     }
   }
 }

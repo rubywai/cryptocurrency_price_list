@@ -12,7 +12,7 @@ typedef PriceDetailProvider
 
 class PriceDetailNotifier extends AutoDisposeNotifier<PriceDetailStateModel> {
   final DetailWssService _wssService = DetailWssService();
-  final FavouriteUtils _favouriteUtils = GetIt.I.get<FavouriteUtils>();
+  final SharedPrefsUtils _favouriteUtils = GetIt.I.get<SharedPrefsUtils>();
   @override
   PriceDetailStateModel build() {
     _wssService.connect();
@@ -20,6 +20,10 @@ class PriceDetailNotifier extends AutoDisposeNotifier<PriceDetailStateModel> {
       _dispose();
     });
     return PriceDetailStateModel();
+  }
+
+  void clearFavourite() {
+    _favouriteUtils.clearFavourites();
   }
 
   void addFavourite(String code) {

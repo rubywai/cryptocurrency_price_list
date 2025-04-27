@@ -4,6 +4,8 @@ import 'package:crypto_price_list/notifiers/news/news_state_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/news_item_widget.dart';
+
 class NewsPage extends ConsumerStatefulWidget {
   const NewsPage({super.key});
 
@@ -24,8 +26,9 @@ class _NewsPageState extends ConsumerState<NewsPage> {
   @override
   Widget build(BuildContext context) {
     NewsStateModel newsStateModel = ref.watch(_provider);
-    TextTheme textTheme = TextTheme.of(context);
+    int count = newsStateModel.newsModel?.articles?.length ?? 0;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (newsStateModel.isLoading)
           Center(
@@ -35,46 +38,26 @@ class _NewsPageState extends ConsumerState<NewsPage> {
             newsStateModel.isLoading == false)
           Expanded(
             child: ListView.builder(
-              itemCount: newsStateModel.newsModel?.articles?.length ?? 0,
+              itemCount: count + 1,
               itemBuilder: (context, index) {
+                if (index == newsStateModel.newsModel?.totalResults) {
+                  return Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(8),
+                    child: Text("Nothing to load"),
+                  );
+                } else if (index == count) {
+                  ref.read(_provider.notifier).loadMore();
+                  return Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 Articles? article = newsStateModel.newsModel?.articles?[index];
-                DateTime? date = DateTime.tryParse(article?.publishedAt ?? '');
-                return Card(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (article?.urlToImage != null)
-                        Image.network(
-                          article!.urlToImage!,
-                          width: 100,
-                          errorBuilder: (_, __, ___) {
-                            return Container(
-                              alignment: Alignment.center,
-                              width: 100,
-                              child: Icon(Icons.error),
-                            );
-                          },
-                        ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              article?.title ?? '',
-                              style: textTheme.titleLarge,
-                            ),
-                            Text(
-                              article?.description ?? '',
-                              style: textTheme.bodyMedium,
-                            ),
-                            if (date != null)
-                              Text(
-                                  '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}')
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+
+                return NewsItemWidget(
+                  article: article,
                 );
               },
             ),

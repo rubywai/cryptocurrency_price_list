@@ -10,7 +10,7 @@ typedef PriceListProvider
 
 class PriceListStateNotifier extends Notifier<PriceListStateModel> {
   final PriceApiServices _apiServices = PriceApiServices();
-  final FavouriteUtils _favouriteUtils = GetIt.I.get<FavouriteUtils>();
+  final SharedPrefsUtils _favouriteUtils = GetIt.I.get<SharedPrefsUtils>();
 
   int _page = 1;
   String? _order;

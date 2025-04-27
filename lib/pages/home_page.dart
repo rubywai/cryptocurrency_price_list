@@ -1,4 +1,5 @@
 import 'package:crypto_price_list/const/routes_const.dart';
+import 'package:crypto_price_list/notifiers/price_detail/price_detail_notifier.dart';
 import 'package:crypto_price_list/pages/favorite_page.dart';
 import 'package:crypto_price_list/pages/news_page.dart';
 import 'package:crypto_price_list/pages/price_list_page.dart';
@@ -25,11 +26,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   final priceListProvider = PriceListProvider(
     () => PriceListStateNotifier(),
   );
+  final priceDetailProvider = PriceDetailProvider(
+    () => PriceDetailNotifier(),
+  );
   @override
   void initState() {
     super.initState();
     if (!GetIt.I.isRegistered<PriceListProvider>()) {
       GetIt.I.registerSingleton<PriceListProvider>(priceListProvider);
+    }
+    if (!GetIt.I.isRegistered<PriceDetailProvider>()) {
+      GetIt.I.registerSingleton<PriceDetailProvider>(priceDetailProvider);
     }
   }
 
@@ -67,11 +74,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ],
                     onTap: (index) {
                       shell.goBranch(index);
-                      if (index == 1) {
-                        ref
-                            .read(priceListProvider.notifier)
-                            .getFavouritesList();
-                      }
                     },
                   ),
                 ],
@@ -85,9 +87,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               selectedIndex: shell.currentIndex,
               onDestinationSelected: (index) {
                 shell.goBranch(index);
-                if (index == 1) {
-                  ref.read(priceListProvider.notifier).getFavouritesList();
-                }
               },
               destinations: [
                 NavigationDestination(

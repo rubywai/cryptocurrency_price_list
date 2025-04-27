@@ -1,9 +1,11 @@
 import 'package:crypto_price_list/const/url_const.dart';
 import 'package:crypto_price_list/notifiers/price_detail/price_detail_notifier.dart';
 import 'package:crypto_price_list/notifiers/price_detail/price_detail_state_model.dart';
+import 'package:crypto_price_list/notifiers/price_list/price_list_state_notifier.dart';
 import 'package:crypto_price_list/widgets/detail_price_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 
 import '../widgets/iframe_viewer/iframe_viewer_common.dart';
 
@@ -21,9 +23,9 @@ class PriceDetailPage extends ConsumerStatefulWidget {
 }
 
 class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
-  final PriceDetailProvider _detailProvider = PriceDetailProvider(
-    () => PriceDetailNotifier(),
-  );
+  final PriceDetailProvider _detailProvider =
+      GetIt.I.get<PriceDetailProvider>();
+  final PriceListProvider _listProvider = GetIt.I.get<PriceListProvider>();
   @override
   void initState() {
     super.initState();
@@ -56,6 +58,7 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
                   } else {
                     detailNotifier.addFavourite(widget.name);
                   }
+                  ref.read(_listProvider.notifier).getFavouritesList();
                 },
                 icon:
                     isFav ? Icon(Icons.star) : Icon(Icons.star_border_outlined),
