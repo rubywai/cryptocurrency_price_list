@@ -6,6 +6,7 @@ import 'package:crypto_price_list/widgets/detail_price_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:screen_protector/screen_protector.dart';
 
 import '../widgets/iframe_viewer/iframe_viewer_common.dart';
 
@@ -29,6 +30,7 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
   @override
   void initState() {
     super.initState();
+    ScreenProtector.preventScreenshotOn();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(_detailProvider.notifier).getUpdatedPrice(
             widget.symbol.toUpperCase(),
@@ -108,6 +110,7 @@ class _PriceDetailPageState extends ConsumerState<PriceDetailPage> {
 
   @override
   void dispose() {
+    ScreenProtector.preventScreenshotOff();
     super.dispose();
   }
 }
