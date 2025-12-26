@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.test_security"
+    namespace = "com.mmcryptoprice.app.test"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
