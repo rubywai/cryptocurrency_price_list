@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="test_security"
+        android:label="Crypto Currency Price App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
